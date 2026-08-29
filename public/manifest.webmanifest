@@ -1,0 +1,87 @@
+{
+  "name": "WHU Ham - 武大汉姆",
+  "short_name": "Ham",
+  "description": "武汉大学学生生活助手 - 课程表、成绩、图书馆、运动场馆、日程管理",
+  "theme_color": "#409EFF",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "categories": ["education", "productivity", "utilities"],
+  "shortcuts": [
+    {
+      "name": "课程表",
+      "short_name": "课程表",
+      "description": "查看今日课程",
+      "url": "/course",
+      "icons": [{ "src": "icons/course.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "图书馆预约",
+      "short_name": "图书馆",
+      "description": "快速预约图书馆座位",
+      "url": "/library",
+      "icons": [{ "src": "icons/library.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "成绩查询",
+      "short_name": "成绩",
+      "description": "查看成绩和计算GPA",
+      "url": "/grade",
+      "icons": [{ "src": "icons/grade.png", "sizes": "192x192" }]
+    }
+  ],
+  "screenshots": [],
+  "prefer_related_applications": false
+}
