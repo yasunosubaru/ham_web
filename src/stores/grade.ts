@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import type { Grade, GPAResult } from '@/types'
 
 const STORAGE_KEY = 'ham_grades'

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import type { BusStop, BusRoute } from '@/types'
+import { ref } from 'vue'
+import type { BusStop } from '@/types'
 
 export const useBusStore = defineStore('bus', () => {
   const stops = ref<BusStop[]>([])

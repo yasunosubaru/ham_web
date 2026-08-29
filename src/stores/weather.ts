@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import type { Weather, WeatherForecast } from '@/types'
 
 export const useWeatherStore = defineStore('weather', () => {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
-import type { Schedule, ScheduleGroup } from '@/types'
+import { ref } from 'vue'
+import type { Schedule, ScheduleGroup, RepeatRule } from '@/types'
 
 const STORAGE_KEY = 'ham_schedules'
 const GROUPS_KEY = 'ham_schedule_groups'
@@ -109,7 +109,7 @@ export const useScheduleStore = defineStore('schedule', () => {
     }).sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
   }
 
-  function isScheduleOnDate(schedule: Schedule, targetTime: number, startOfDay: Date, endOfDay: Date): boolean {
+  function isScheduleOnDate(schedule: Schedule, targetTime: number, _startOfDay: Date, endOfDay: Date): boolean {
     const { repeatRule, startTime } = schedule
     if (!repeatRule) return false
 

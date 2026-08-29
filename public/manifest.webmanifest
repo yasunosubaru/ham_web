@@ -10,51 +10,51 @@
   "start_url": "/",
   "icons": [
     {
-      "src": "icons/icon-72x72.png",
+      "src": "icons/icon-72x72.svg",
       "sizes": "72x72",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "icons/icon-96x96.png",
+      "src": "icons/icon-96x96.svg",
       "sizes": "96x96",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "icons/icon-128x128.png",
+      "src": "icons/icon-128x128.svg",
       "sizes": "128x128",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "icons/icon-144x144.png",
+      "src": "icons/icon-144x144.svg",
       "sizes": "144x144",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "icons/icon-152x152.png",
+      "src": "icons/icon-152x152.svg",
       "sizes": "152x152",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "icons/icon-192x192.png",
+      "src": "icons/icon-192x192.svg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "icons/icon-384x384.png",
+      "src": "icons/icon-384x384.svg",
       "sizes": "384x384",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     },
     {
-      "src": "icons/icon-512x512.png",
+      "src": "icons/icon-512x512.svg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/svg+xml",
       "purpose": "maskable any"
     }
   ],
@@ -65,21 +65,21 @@
       "short_name": "课程表",
       "description": "查看今日课程",
       "url": "/course",
-      "icons": [{ "src": "icons/course.png", "sizes": "192x192" }]
+      "icons": [{ "src": "icons/course.svg", "sizes": "192x192" }]
     },
     {
       "name": "图书馆预约",
       "short_name": "图书馆",
       "description": "快速预约图书馆座位",
       "url": "/library",
-      "icons": [{ "src": "icons/library.png", "sizes": "192x192" }]
+      "icons": [{ "src": "icons/library.svg", "sizes": "192x192" }]
     },
     {
       "name": "成绩查询",
       "short_name": "成绩",
       "description": "查看成绩和计算GPA",
       "url": "/grade",
-      "icons": [{ "src": "icons/grade.png", "sizes": "192x192" }]
+      "icons": [{ "src": "icons/grade.svg", "sizes": "192x192" }]
     }
   ],
   "screenshots": [],
