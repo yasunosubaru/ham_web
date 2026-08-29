@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Schedule, ScheduleGroup, RepeatRule } from '@/types'
+import type { Schedule, ScheduleGroup } from '@/types'
 
 const STORAGE_KEY = 'ham_schedules'
 const GROUPS_KEY = 'ham_schedule_groups'

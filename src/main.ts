@@ -6,6 +6,10 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import App from './App.vue'
 import router from './router'
 import './styles/index.scss'
+import { seedDemoData } from './utils/demo'
+
+// Seed demo data on first launch
+seedDemoData()
 
 const app = createApp(App)
 const pinia = createPinia()
