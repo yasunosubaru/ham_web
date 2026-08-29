@@ -1,4 +1,51 @@
-// Global styles
+// ── CSS Variables ───────────────────────────────────
+:root {
+  --bg-primary: #f5f7fa;
+  --bg-card: #ffffff;
+  --bg-elevated: #ffffff;
+  --bg-input: #f5f7fa;
+  --bg-hover: #f5f7fa;
+  --text-primary: #303133;
+  --text-secondary: #606266;
+  --text-tertiary: #909399;
+  --text-muted: #c0c4cc;
+  --border-color: #e4e7ed;
+  --border-light: #f5f7fa;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --danger: #F56C6C;
+  --success: #67C23A;
+  --warning: #E6A23C;
+  --primary: #409EFF;
+  --primary-light: #66B1FF;
+  --toggle-off: #d1d5db;
+  --course-shadow: rgba(0, 0, 0, 0.15);
+}
+
+html.dark {
+  --bg-primary: #1a1a2e;
+  --bg-card: #25253e;
+  --bg-elevated: #2a2a45;
+  --bg-input: #2a2a45;
+  --bg-hover: #30304d;
+  --text-primary: #e5e7eb;
+  --text-secondary: #9ca3af;
+  --text-tertiary: #6b7280;
+  --text-muted: #4b5563;
+  --border-color: #374151;
+  --border-light: #1f2937;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --danger: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --primary: #60a5fa;
+  --primary-light: #93c5fd;
+  --toggle-off: #4b5563;
+  --course-shadow: rgba(0, 0, 0, 0.4);
+}
+
+// ── Reset ───────────────────────────────────────────
 * {
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
@@ -13,6 +60,9 @@ html, body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'PingFang SC', 'Helvetica Neue', Arial, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 #app {
@@ -64,7 +114,7 @@ html, body {
 .page-container {
   flex: 1;
   overflow-y: auto;
-  background: #f5f7fa;
+  background: var(--bg-primary);
   padding-bottom: env(safe-area-inset-bottom, 60px);
 }
 
@@ -72,33 +122,35 @@ html, body {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: white;
+  background: var(--bg-card);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   padding: 0 16px;
   height: 44px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  transition: background 0.3s;
 }
 
 .page-title {
   font-size: 18px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
   margin: 12px;
   padding: 16px;
+  transition: background 0.3s;
 }
 
 .card-title {
   font-size: 16px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-primary);
   margin-bottom: 12px;
   display: flex;
   align-items: center;
@@ -112,7 +164,7 @@ html, body {
 .section-title {
   font-size: 14px;
   font-weight: 500;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-bottom: 8px;
   padding-left: 4px;
 }
@@ -123,7 +175,7 @@ html, body {
   align-items: center;
   justify-content: center;
   padding: 48px 16px;
-  color: #909399;
+  color: var(--text-tertiary);
   text-align: center;
 }
 
@@ -151,11 +203,12 @@ html, body {
 
 .tab-nav {
   display: flex;
-  background: white;
+  background: var(--bg-card);
   border-radius: 8px;
   padding: 4px;
   margin: 0 12px 12px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: background 0.3s;
 }
 
 .tab-item {
@@ -165,7 +218,7 @@ html, body {
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
-  color: #606266;
+  color: var(--text-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -176,18 +229,19 @@ html, body {
 }
 
 .tab-item:not(.active):hover {
-  background: #f5f7fa;
+  background: var(--bg-hover);
 }
 
 .stat-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 16px;
   margin: 0 12px 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
   display: flex;
   align-items: center;
   gap: 12px;
+  transition: background 0.3s;
 }
 
 .stat-icon {
@@ -207,22 +261,23 @@ html, body {
 
 .stat-label {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-bottom: 4px;
 }
 
 .stat-value {
   font-size: 20px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .grade-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
   padding: 16px;
   margin: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s;
 }
 
 .grade-header {
@@ -231,13 +286,13 @@ html, body {
   align-items: center;
   margin-bottom: 12px;
   padding-bottom: 12px;
-  border-bottom: 1px solid #e4e7ed;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .grade-course-name {
   font-size: 15px;
   font-weight: 500;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .grade-score {
@@ -245,17 +300,17 @@ html, body {
   font-weight: 700;
 }
 
-.grade-score.excellent { color: #67C23A; }
-.grade-score.good { color: #409EFF; }
-.grade-score.pass { color: #E6A23C; }
-.grade-score.fail { color: #F56C6C; }
+.grade-score.excellent { color: var(--success); }
+.grade-score.good { color: var(--primary); }
+.grade-score.pass { color: var(--warning); }
+.grade-score.fail { color: var(--danger); }
 
 .grade-details {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   font-size: 12px;
-  color: #606266;
+  color: var(--text-secondary);
 }
 
 .grade-detail-item {
@@ -264,17 +319,18 @@ html, body {
 }
 
 .grade-detail-label {
-  color: #909399;
+  color: var(--text-tertiary);
   font-size: 11px;
   margin-bottom: 2px;
 }
 
 .gpa-summary {
-  background: linear-gradient(135deg, #409EFF 0%, #66B1FF 100%);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
   border-radius: 12px;
   padding: 20px;
   margin: 12px;
   color: white;
+  transition: background 0.3s;
 }
 
 .gpa-summary-title {

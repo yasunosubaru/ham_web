@@ -178,15 +178,16 @@ function cancelReservation() {
   margin: 12px;
   padding: 14px 16px;
   border-radius: 12px;
+  transition: background 0.3s;
 
   &.active {
-    background: #f0f9eb;
-    border: 1px solid rgba(103, 194, 58, 0.3);
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.3);
   }
 
   &.none {
-    background: #f5f7fa;
-    border: 1px solid #e4e7ed;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
   }
 }
 
@@ -207,11 +208,12 @@ function cancelReservation() {
 .status-title {
   font-size: 14px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .status-detail {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-top: 2px;
 }
 
@@ -223,14 +225,14 @@ function cancelReservation() {
 }
 
 .building-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 14px;
   padding: 16px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e4e7ed;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, background 0.3s;
 
   &:active { transform: scale(0.97); }
 }
@@ -243,7 +245,7 @@ function cancelReservation() {
 .building-name {
   font-size: 14px;
   font-weight: 600;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .building-avail {
@@ -259,7 +261,7 @@ function cancelReservation() {
 }
 
 .floor-card {
-  background: #f5f7fa;
+  background: var(--bg-input);
   border-radius: 10px;
   padding: 12px;
   text-align: center;
@@ -268,6 +270,7 @@ function cancelReservation() {
 .floor-name {
   font-size: 13px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .floor-avail {
@@ -287,13 +290,14 @@ function cancelReservation() {
   text-align: center;
   border-radius: 8px;
   font-size: 12px;
-  background: #f5f7fa;
-  border: 1px solid #e4e7ed;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
   cursor: pointer;
+  color: var(--text-primary);
 
   &.available {
     cursor: pointer;
-    &:hover { background: #ecf5ff; }
+    &:hover { background: rgba(64, 158, 255, 0.1); }
   }
 
   &.selected {

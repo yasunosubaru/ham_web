@@ -150,7 +150,7 @@ const gpaText = computed(() => {
 
 const quickActions = [
   { path: '/schedule', icon: '📅', label: '课表' },
-  { path: '/score', icon: '📊', label: '成绩' },
+  { path: '/grade', icon: '📊', label: '成绩' },
   { path: '/library', icon: '📚', label: '图书馆' },
   { path: '/sport', icon: '🏸', label: '运动场馆' },
 ]
@@ -171,25 +171,26 @@ function formatTime(d: Date): string {
 
 .home-header {
   padding: 20px 16px 16px;
-  background: white;
+  background: var(--bg-card);
+  transition: background 0.3s;
 }
 
 .greeting {
   font-size: 24px;
   font-weight: 700;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .date-text {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-top: 4px;
 }
 
 .next-class-card {
   margin: 12px;
   padding: 20px;
-  background: linear-gradient(135deg, #409EFF, #66B1FF);
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
   border-radius: 16px;
   color: white;
 }
@@ -225,12 +226,13 @@ function formatTime(d: Date): string {
 }
 
 .quick-action {
-  background: white;
+  background: var(--bg-card);
   border-radius: 14px;
   padding: 14px 8px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
   cursor: pointer;
+  transition: background 0.3s;
 
   &:active { transform: scale(0.95); }
 }
@@ -243,7 +245,7 @@ function formatTime(d: Date): string {
 .quick-action-text {
   font-size: 11px;
   font-weight: 500;
-  color: #606266;
+  color: var(--text-secondary);
 }
 
 .stat-grid {
@@ -254,13 +256,14 @@ function formatTime(d: Date): string {
 }
 
 .stat-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 14px;
   padding: 14px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s;
 }
 
 .stat-icon {
@@ -270,18 +273,18 @@ function formatTime(d: Date): string {
 .stat-value {
   font-size: 20px;
   font-weight: 700;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .stat-label {
   font-size: 11px;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-top: 2px;
 }
 
 .empty-text {
   text-align: center;
-  color: #909399;
+  color: var(--text-tertiary);
   font-size: 13px;
   padding: 16px 0;
 }
@@ -293,7 +296,7 @@ function formatTime(d: Date): string {
   padding: 8px 0;
 
   & + & {
-    border-top: 1px solid #f5f7fa;
+    border-top: 1px solid var(--border-light);
   }
 }
 
@@ -301,7 +304,7 @@ function formatTime(d: Date): string {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #409EFF;
+  background: var(--primary);
   margin-top: 5px;
   flex-shrink: 0;
 }
@@ -309,11 +312,12 @@ function formatTime(d: Date): string {
 .event-title {
   font-size: 14px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .event-detail {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-top: 2px;
 }
 </style>

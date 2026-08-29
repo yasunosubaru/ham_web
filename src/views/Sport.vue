@@ -124,27 +124,29 @@ function confirmBooking() {
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 13px;
-  background: white;
-  border: 1.5px solid #e4e7ed;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s;
+  color: var(--text-primary);
 
   &.active {
-    background: #409EFF;
+    background: var(--primary);
     color: white;
-    border-color: #409EFF;
+    border-color: var(--primary);
   }
 
   &:active { transform: scale(0.95); }
 }
 
 .sport-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 14px;
   padding: 16px;
   margin: 0 12px 10px;
-  border: 1px solid #e4e7ed;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s;
 }
 
 .sport-header {
@@ -157,6 +159,7 @@ function confirmBooking() {
 .sport-name {
   font-size: 15px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .sport-badge {
@@ -186,10 +189,11 @@ function confirmBooking() {
   padding: 8px 14px;
   border-radius: 8px;
   font-size: 12px;
-  background: #f5f7fa;
-  border: 1px solid #e4e7ed;
+  background: var(--bg-input);
+  border: 1px solid var(--border-color);
   cursor: pointer;
   transition: all 0.2s;
+  color: var(--text-primary);
 
   &:active { transform: scale(0.95); }
 

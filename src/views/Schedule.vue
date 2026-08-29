@@ -226,33 +226,35 @@ function addCourse() {
   min-width: 44px;
   padding: 8px 4px;
   border-radius: 10px;
-  background: white;
-  border: 1.5px solid #e4e7ed;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border-color);
   text-align: center;
   cursor: pointer;
   transition: all 0.2s;
 
   &.active {
-    background: #409EFF;
+    background: var(--primary);
     color: white;
-    border-color: #409EFF;
+    border-color: var(--primary);
   }
 
   &.today:not(.active) {
-    border-color: #409EFF;
-    color: #409EFF;
+    border-color: var(--primary);
+    color: var(--primary);
   }
 }
 
 .day-name {
   font-size: 12px;
   font-weight: 600;
+  color: var(--text-primary);
 }
 
 .day-date {
   font-size: 10px;
   opacity: 0.7;
   margin-top: 2px;
+  color: var(--text-tertiary);
 }
 
 .course-grid-wrapper {
@@ -266,18 +268,18 @@ function addCourse() {
   display: grid;
   grid-template-columns: 42px repeat(7, 1fr);
   gap: 1px;
-  background: #e4e7ed;
+  background: var(--border-color);
   border-radius: 8px;
   overflow: hidden;
   min-width: 100%;
 }
 
 .grid-header {
-  background: #f5f7fa;
+  background: var(--bg-input);
 }
 
 .period-label {
-  background: #f5f7fa;
+  background: var(--bg-input);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -289,26 +291,27 @@ function addCourse() {
 .period-num {
   font-size: 12px;
   font-weight: 600;
-  color: #606266;
+  color: var(--text-secondary);
 }
 
 .period-time {
   font-size: 9px;
-  color: #909399;
+  color: var(--text-tertiary);
 }
 
 .grid-cell {
-  background: white;
+  background: var(--bg-card);
   min-height: 52px;
   position: relative;
   cursor: pointer;
+  transition: background 0.3s;
 
   &.current-cell {
-    background: #ecf5ff;
+    background: rgba(64, 158, 255, 0.1);
   }
 
   &:active {
-    background: #f5f7fa;
+    background: var(--bg-hover);
   }
 }
 
@@ -345,7 +348,7 @@ function addCourse() {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #409EFF;
+  background: var(--primary);
   color: white;
   display: flex;
   align-items: center;

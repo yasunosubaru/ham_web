@@ -230,7 +230,7 @@ function addEvent() {
   text-align: center;
   font-size: 11px;
   font-weight: 600;
-  color: #909399;
+  color: var(--text-tertiary);
   padding: 6px 0;
 }
 
@@ -243,21 +243,22 @@ function addEvent() {
   font-size: 13px;
   cursor: pointer;
   position: relative;
+  color: var(--text-primary);
 
   &.today {
-    background: #409EFF;
+    background: var(--primary);
     color: white;
     font-weight: 700;
   }
 
   &.selected:not(.today) {
     background: rgba(64, 158, 255, 0.15);
-    color: #409EFF;
+    color: var(--primary);
     font-weight: 600;
   }
 
   &.other-month {
-    color: #d1d5db;
+    color: var(--text-muted);
   }
 
   &.has-event::after {
@@ -267,7 +268,7 @@ function addEvent() {
     width: 4px;
     height: 4px;
     border-radius: 50%;
-    background: #409EFF;
+    background: var(--primary);
   }
 
   &.today.has-event::after {
@@ -281,10 +282,11 @@ function addEvent() {
   gap: 12px;
   padding: 14px 16px;
   margin: 0 12px 8px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 12px;
-  border-left: 3px solid #409EFF;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border-left: 3px solid var(--primary);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s;
 }
 
 .event-time-col {
@@ -295,12 +297,12 @@ function addEvent() {
 .event-time-text {
   font-size: 14px;
   font-weight: 600;
-  color: #409EFF;
+  color: var(--primary);
 }
 
 .event-time-sub {
   font-size: 11px;
-  color: #909399;
+  color: var(--text-tertiary);
 }
 
 .event-content {
@@ -310,17 +312,18 @@ function addEvent() {
 .event-title {
   font-size: 15px;
   font-weight: 500;
+  color: var(--text-primary);
 }
 
 .event-location {
   font-size: 12px;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-top: 4px;
 }
 
 .event-note {
   font-size: 12px;
-  color: #606266;
+  color: var(--text-secondary);
   margin-top: 4px;
 }
 
@@ -331,7 +334,7 @@ function addEvent() {
   width: 48px;
   height: 48px;
   border-radius: 50%;
-  background: #409EFF;
+  background: var(--primary);
   color: white;
   display: flex;
   align-items: center;

@@ -11,6 +11,13 @@
       </div>
       <div class="setting-item">
         <div class="setting-left">
+          <span class="setting-icon">🌙</span>
+          <span class="setting-name">深色模式</span>
+        </div>
+        <div class="toggle" :class="{ on: isDark }" @click="toggleDark" />
+      </div>
+      <div class="setting-item">
+        <div class="setting-left">
           <span class="setting-icon">🔒</span>
           <span class="setting-name">生物识别锁定</span>
         </div>
@@ -76,9 +83,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useCourseStore } from '@/stores/course'
+import { useDarkMode } from '@/composables/useDarkMode'
 import { ElMessageBox, ElMessage } from 'element-plus'
 
 const courseStore = useCourseStore()
+const { isDark, toggle: toggleDark } = useDarkMode()
 const bioLock = ref(true)
 const showSemesterDialog = ref(false)
 const semesterStart = ref('')
@@ -165,11 +174,12 @@ function clearData() {
 }
 
 .setting-group {
-  background: white;
+  background: var(--bg-card);
   border-radius: 14px;
   overflow: hidden;
   margin-bottom: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s;
 }
 
 .setting-item {
@@ -177,11 +187,11 @@ function clearData() {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid #f5f7fa;
+  border-bottom: 1px solid var(--border-light);
   cursor: pointer;
 
   &:last-child { border-bottom: none; }
-  &:active { background: #f5f7fa; }
+  &:active { background: var(--bg-hover); }
 }
 
 .setting-left {
@@ -196,19 +206,20 @@ function clearData() {
 
 .setting-name {
   font-size: 14px;
+  color: var(--text-primary);
 
-  &.danger { color: #F56C6C; }
+  &.danger { color: var(--danger); }
 }
 
 .setting-arrow {
-  color: #d1d5db;
+  color: var(--text-muted);
   font-size: 18px;
 }
 
 .toggle {
   width: 46px;
   height: 28px;
-  background: #d1d5db;
+  background: var(--toggle-off);
   border-radius: 14px;
   position: relative;
   cursor: pointer;
@@ -228,17 +239,18 @@ function clearData() {
   }
 
   &.on {
-    background: #67C23A;
+    background: var(--success);
     &::after { transform: translateX(18px); }
   }
 }
 
 .about-card {
-  background: white;
+  background: var(--bg-card);
   border-radius: 14px;
   padding: 24px;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-sm);
+  transition: background 0.3s;
 }
 
 .about-icon {
@@ -249,18 +261,18 @@ function clearData() {
 .about-name {
   font-size: 18px;
   font-weight: 700;
-  color: #303133;
+  color: var(--text-primary);
 }
 
 .about-desc {
   font-size: 13px;
-  color: #909399;
+  color: var(--text-tertiary);
   margin-top: 4px;
 }
 
 .about-sub {
   font-size: 12px;
-  color: #c0c4cc;
+  color: var(--text-muted);
   margin-top: 8px;
 }
 </style>

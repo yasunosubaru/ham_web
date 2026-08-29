@@ -37,6 +37,10 @@ import {
   House, Calendar, DataAnalysis, Clock,
   Reading, Football, Setting
 } from '@element-plus/icons-vue'
+import { useDarkMode } from './composables/useDarkMode'
+
+// Initialize dark mode on app start
+useDarkMode()
 
 const router = useRouter()
 const route = useRoute()
@@ -66,13 +70,15 @@ function navigateTo(path: string) {
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: #f5f7fa;
+  background: var(--bg-primary);
+  transition: background 0.3s;
 }
 
 .status-bar-spacer {
   height: env(safe-area-inset-top, 0px);
-  background: white;
+  background: var(--bg-card);
   flex-shrink: 0;
+  transition: background 0.3s;
 }
 
 .page-container {
@@ -83,11 +89,12 @@ function navigateTo(path: string) {
 
 .tab-bar {
   display: flex;
-  background: white;
-  border-top: 1px solid #ebeef5;
+  background: var(--bg-card);
+  border-top: 1px solid var(--border-color);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   flex-shrink: 0;
   z-index: 100;
+  transition: background 0.3s;
 }
 
 .tab-bar-item {
@@ -99,11 +106,11 @@ function navigateTo(path: string) {
   padding: 6px 0 4px;
   gap: 2px;
   cursor: pointer;
-  color: #909399;
+  color: var(--text-tertiary);
   transition: color 0.2s;
 
   &.active {
-    color: #409EFF;
+    color: var(--primary);
   }
 
   &:active {
