@@ -5,7 +5,7 @@ import path from 'path'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command }) => ({
-  base: command === 'serve' ? '/' : '/ham-web/',
+  base: command === 'serve' ? '/' : '/ham_web/',
   plugins: [
     vue(),
     VitePWA({
@@ -19,8 +19,8 @@ export default defineConfig(({ command }) => ({
         background_color: '#ffffff',
         display: 'standalone',
         orientation: 'portrait-primary',
-        scope: '/ham-web/',
-        start_url: '/ham-web/',
+        scope: '/ham_web/',
+        start_url: '/ham_web/',
         icons: [
           {
             src: 'icons/icon-72x72.png',
