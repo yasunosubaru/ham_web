@@ -1,4 +1,60 @@
-export interface Course {
+// User & Auth Types
+export interface UserInfo {
+  studentId: string
+  name: string
+  college: string
+  major: string
+  className?: string
+  xhId?: string
+}
+
+export interface AuthState {
+  isLoggedIn: boolean
+  userInfo: UserInfo | null
+  casCookie: string | null
+  sessionExpires: number | null
+}
+
+// Grade Types
+export interface GradeItem {
+  year: number
+  semester: number
+  name: string
+  courseId: string
+  instructor: string
+  credit: number
+  courseType: string
+  score: number
+  courseCollege: string
+  isEnabled: boolean
+  gpa?: number
+}
+
+export interface GradeResponse {
+  items: GradeItem[]
+  userInfo: {
+    college: string
+    major: string
+    name: string
+    studentId: string
+  }
+}
+
+export interface GPACalculationResult {
+  gpa: number
+  totalCredits: number
+  earnedCredits: number
+  weightedScore: number
+  f2Score?: number
+  f2Detail?: {
+    b1: number
+    b2: number
+    selectedElectives: GradeItem[]
+  }
+}
+
+// Course Types
+export interface CourseItem {
   id: string
   name: string
   teacher: string
@@ -8,157 +64,101 @@ export interface Course {
   endPeriod: number
   startWeek: number
   endWeek: number
-  color: string
-  credit?: number
-  type?: string
   weeks: number[]
-}
-
-export interface Grade {
-  id: string
-  courseName: string
-  teacher: string
-  credit: number
-  score: number
-  gpa: number
-  type: 'required' | 'elective' | 'general' | 'cross'
-  semester: string
-  year: number
-  term: number
-}
-
-export interface Schedule {
-  id: string
-  title: string
-  location?: string
-  note?: string
-  startTime: Date
-  endTime?: Date
-  groupId?: string
-  reminderMinutes?: number
-  repeatRule?: RepeatRule
-  courseId?: string
-  completed: boolean
-}
-
-export interface RepeatRule {
-  frequency: 'daily' | 'weekly' | 'monthly'
-  interval: number
-  endDate?: Date
-  daysOfWeek?: number[]
-}
-
-export interface ScheduleGroup {
-  id: string
-  name: string
-  icon: string
   color: string
+  courseType?: string
+  credit?: number
 }
 
-export interface LibrarySeat {
-  id: string
-  library: string
-  floor: string
-  room: string
-  seatNumber: string
-  status: 'available' | 'booked' | 'full' | 'maintenance'
-  startTime?: Date
-  endTime?: Date
-}
-
-export interface LibraryBooking {
-  id: string
-  seat: LibrarySeat
-  startTime: Date
-  endTime: Date
-  status: 'active' | 'completed' | 'cancelled' | 'expired'
-}
-
-export interface SportVenue {
-  id: string
+// Teacher Types
+export interface TeacherInfo {
   name: string
-  sportType: string
-  address: string
-  image?: string
-}
-
-export interface SportSession {
-  id: string
-  venueId: string
-  court: string
-  date: Date
-  startTime: string
-  endTime: string
-  status: 'available' | 'booked' | 'full'
-  price: number
-}
-
-export interface BusStop {
-  id: string
-  name: string
-  latitude: number
-  longitude: number
-  routes: BusRoute[]
-}
-
-export interface BusRoute {
-  id: string
-  name: string
-  direction: string
-  nextArrival: number
-  subsequentArrivals: number[]
-}
-
-export interface Weather {
-  temperature: number
-  condition: string
-  icon: string
-  humidity: number
-  windSpeed: number
-  forecast: WeatherForecast[]
-}
-
-export interface WeatherForecast {
-  date: Date
-  high: number
-  low: number
-  condition: string
-  icon: string
-}
-
-export interface User {
-  id: string
-  studentId: string
-  name: string
-  avatar?: string
+  department: string
   college: string
-  major: string
-  grade: string
-  casUsername?: string
+  avatar?: string
+  rating: number
+  totalRatings: number
+  courses: TeacherCourse[]
 }
 
-export interface GPAResult {
-  gpa: number
-  totalCredits: number
-  earnedCredits: number
-  weightedScore: number
-  f2Score?: number
-  f2Detail?: {
-    b1: number
-    b2: number
-    selectedElectives: Grade[]
-  }
+export interface TeacherCourse {
+  name: string
+  avgScore: number
+  rating: number
+  totalStudents: number
+  distribution: GradeDistribution[]
 }
 
 export interface GradeDistribution {
+  range: string
+  count: number
+  percentage: number
+}
+
+// 给分查询 Types
+export interface GradeDistributionQuery {
+  courseName?: string
+  teacherName?: string
+}
+
+export interface GradeDistributionResult {
   courseName: string
-  teacher: string
-  total: number
+  teacherName: string
+  totalStudents: number
+  averageScore: number
+  medianScore: number
   distribution: {
     range: string
     count: number
     percentage: number
   }[]
-  average: number
-  median: number
+  ratings: TeacherRating[]
+}
+
+export interface TeacherRating {
+  id: string
+  courseName: string
+  teacherName: string
+  rating: number
+  difficulty: number
+  homework: number
+  grading: number
+  comment: string
+  createdAt: string
+  semester: string
+  isAnonymous: boolean
+}
+
+// API Response Types
+export interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+  message?: string
+}
+
+export interface CasLoginResult {
+  url: string
+  text: string
+  needsReAuth: boolean
+  reAuthUrl?: string
+}
+
+// Semester Config
+export interface SemesterConfig {
+  year: number
+  semester: number
+  validate: string
+}
+
+export type Semester = 1 | 2 | 3 // 1=秋季, 2=春季, 3=夏季
+
+// Settings
+export interface AppSettings {
+  theme: 'light' | 'dark' | 'system'
+  primaryColor: string
+  autoRefreshGrades: boolean
+  gradeNotification: boolean
+  dataSyncEnabled: boolean
+  biometricEnabled: boolean
 }

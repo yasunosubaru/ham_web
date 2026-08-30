@@ -1,59 +1,74 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      redirect: '/home'
+      redirect: '/dashboard',
     },
     {
-      path: '/home',
-      name: 'home',
-      component: () => import('@/views/Home.vue'),
-      meta: { title: '首页', icon: 'House', tabBar: true }
+      path: '/login',
+      name: 'login',
+      component: () => import('@/views/LoginView.vue'),
+      meta: { title: '登录', requiresAuth: false, hideTabBar: true },
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      component: () => import('@/views/DashboardView.vue'),
+      meta: { title: '首页', icon: 'House', requiresAuth: true },
+    },
+    {
+      path: '/grades',
+      name: 'grades',
+      component: () => import('@/views/GradesView.vue'),
+      meta: { title: '成绩', icon: 'Document', requiresAuth: true },
+    },
+    {
+      path: '/grade-distribution',
+      name: 'grade-distribution',
+      component: () => import('@/views/GradeDistributionView.vue'),
+      meta: { title: '给分查询', icon: 'Histogram', requiresAuth: true },
+    },
+    {
+      path: '/teachers',
+      name: 'teachers',
+      component: () => import('@/views/TeachersView.vue'),
+      meta: { title: '教师查询', icon: 'User', requiresAuth: true },
     },
     {
       path: '/schedule',
       name: 'schedule',
-      component: () => import('@/views/Schedule.vue'),
-      meta: { title: '课程表', icon: 'Calendar', tabBar: true }
-    },
-    {
-      path: '/grade',
-      name: 'grade',
-      component: () => import('@/views/Score.vue'),
-      meta: { title: '成绩', icon: 'DataAnalysis', tabBar: true }
-    },
-    {
-      path: '/calendar',
-      name: 'calendar',
-      component: () => import('@/views/Calendar.vue'),
-      meta: { title: '日程', icon: 'Clock', tabBar: true }
-    },
-    {
-      path: '/library',
-      name: 'library',
-      component: () => import('@/views/Library.vue'),
-      meta: { title: '图书馆', icon: 'Reading', tabBar: true }
-    },
-    {
-      path: '/sport',
-      name: 'sport',
-      component: () => import('@/views/Sport.vue'),
-      meta: { title: '运动场馆', icon: 'Football', tabBar: true }
+      component: () => import('@/views/ScheduleView.vue'),
+      meta: { title: '课程表', icon: 'Calendar', requiresAuth: true },
     },
     {
       path: '/settings',
       name: 'settings',
-      component: () => import('@/views/Settings.vue'),
-      meta: { title: '设置', icon: 'Setting', tabBar: true }
-    }
-  ]
+      component: () => import('@/views/SettingsView.vue'),
+      meta: { title: '设置', icon: 'Setting', requiresAuth: true },
+    },
+    {
+      path: '/cas-callback',
+      name: 'cas-callback',
+      component: () => import('@/views/CasCallbackView.vue'),
+      meta: { title: '登录中...', requiresAuth: false, hideTabBar: true },
+    },
+  ],
 })
 
-router.beforeEach((to) => {
-  document.title = (to.meta.title ? `${to.meta.title} - ` : '') + 'Ham'
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore()
+  
+  if (to.meta.requiresAuth && !authStore.isLoggedIn) {
+    next('/login')
+  } else if (to.path === '/login' && authStore.isLoggedIn) {
+    next('/dashboard')
+  } else {
+    next()
+  }
 })
 
 export default router
