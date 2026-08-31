@@ -125,18 +125,18 @@ class RequestService {
     return this.request<T>(url, { ...options, method: 'POST', data })
   }
 
-  // CAS Authentication
-  async casLogin(service: string): Promise<{ url: string; text: string; needsReAuth: boolean; reAuthUrl?: string }> {
-    const loginUrl = `${CAS_BASE_URL}/authserver/login?service=${encodeURIComponent(service)}`
+  // CAS Authentication (via Worker proxy)
+  async casLogin(service: string): Promise<CasLoginResult> {
+    const loginUrl = `/cas/authserver/login?service=${encodeURIComponent(service)}`
     
     try {
-      const response = await this.casClient.get(loginUrl, { responseType: 'text' })
+      const response = await this.proxyClient.get(loginUrl, { responseType: 'text' })
       
       const needsReAuth = response.request?.responseURL?.includes('ReAuth') || false
       const reAuthUrl = needsReAuth ? response.request.responseURL : undefined
 
       return {
-        url: response.request?.responseURL || loginUrl,
+        url: response.request?.responseURL || `/api/cas/authserver/login?service=${encodeURIComponent(service)}`,
         text: response.data,
         needsReAuth,
         reAuthUrl,
@@ -146,7 +146,7 @@ class RequestService {
     }
   }
 
-  async casFastLogin(service: string): Promise<{ url: string; text: string; needsReAuth: boolean; reAuthUrl?: string }> {
+  async casFastLogin(service: string): Promise<CasLoginResult> {
     return this.casLogin(service)
   }
 
