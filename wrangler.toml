@@ -1,0 +1,11 @@
+name = "ham-web"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+[vars]
+ALLOWED_ORIGIN = "https://ham-web.1845639127.workers.dev"

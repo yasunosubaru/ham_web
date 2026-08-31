@@ -3,7 +3,7 @@ import CryptoJS from 'crypto-js'
 
 const CAS_BASE_URL = 'https://cas.whu.edu.cn'
 const EDU_BASE_URL = 'https://jwgl.whu.edu.cn'
-// 改成你的 Worker 域名 + /api
+// 使用代理 Worker 域名 + /api
 const PROXY_BASE_URL = 'https://whu-ham-proxy.1845639127.workers.dev/api';
 
 interface RequestOptions extends AxiosRequestConfig {
