@@ -3,7 +3,8 @@ import CryptoJS from 'crypto-js'
 
 const CAS_BASE_URL = 'https://cas.whu.edu.cn'
 const EDU_BASE_URL = 'https://jwgl.whu.edu.cn'
-const PROXY_BASE_URL = '/api' // Will be proxied by Vite dev server or backend
+// 改成你的 Worker 域名 + /api
+const PROXY_BASE_URL = 'https://whu-ham-proxy.1845639127.workers.dev/api';
 
 interface RequestOptions extends AxiosRequestConfig {
   useProxy?: boolean
