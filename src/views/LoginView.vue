@@ -38,18 +38,41 @@
         <p>非官方应用，由 WHU Ham Team 开发维护</p>
       </div>
     </div>
+
+    <!-- CAS 登录 iframe（隐藏，登录时显示） -->
+    <div v-if="showCasIframe" class="cas-iframe-overlay">
+      <div class="cas-iframe-container">
+        <div class="cas-iframe-header">
+          <span>武汉大学统一身份认证</span>
+          <el-button size="small" @click="closeCasIframe">
+            <Close />
+          </el-button>
+        </div>
+        <iframe 
+          ref="casIframe" 
+          :src="casIframeSrc" 
+          @load="onIframeLoad"
+          sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-top-navigation-by-user-activation"
+        ></iframe>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { Lock, Loading } from '@element-plus/icons-vue'
+import { onMounted, ref } from 'vue'
+import { Lock, Loading, Close } from '@element-plus/icons-vue'
 import { useRouter } from 'vue-router'
 import { CasAuthService } from '@/api/cas'
 import { useAuthStore } from '@/stores/auth'
+import { ElMessage } from 'element-plus'
 
 const router = useRouter()
 const authStore = useAuthStore()
+
+const showCasIframe = ref(false)
+const casIframeSrc = ref('')
+const casIframe = ref<HTMLIFrameElement | null>(null)
 
 async function handleLogin() {
   authStore.setLoginLoading(true)
@@ -59,16 +82,15 @@ async function handleLogin() {
     const result = await CasAuthService.login()
     
     if (result.needsReAuth && result.reAuthUrl) {
-      // Redirect to CAS re-auth page
-      window.location.href = result.reAuthUrl
+      // 需要重新认证，通过代理打开
+      const proxyUrl = `/api/cas${new URL(result.reAuthUrl).pathname}${new URL(result.reAuthUrl).search}`
+      openCasIframe(proxyUrl)
       return
     }
 
-    // For web version, we need to open CAS in a popup or redirect
-    // Since we can't directly get cookies from CAS in browser,
-    // we'll redirect to CAS and handle callback
+    // 正常登录流程
     const casUrl = CasAuthService.getLoginUrl()
-    window.location.href = casUrl
+    openCasIframe(casUrl)
   } catch (error: any) {
     authStore.setLoginError(error.message || '登录失败，请重试')
   } finally {
@@ -76,8 +98,44 @@ async function handleLogin() {
   }
 }
 
+function openCasIframe(url: string) {
+  casIframeSrc.value = url
+  showCasIframe.value = true
+}
+
+function closeCasIframe() {
+  showCasIframe.value = false
+  casIframeSrc.value = ''
+  // 关闭后检查是否登录成功
+  checkLoginStatus()
+}
+
+function onIframeLoad() {
+  // 检查 iframe 是否重定向回应用
+  try {
+    const iframe = casIframe.value
+    if (iframe && iframe.contentWindow) {
+      const href = iframe.contentWindow.location.href
+      if (href.includes(window.location.origin) || href.includes('/dashboard') || href.includes('/callback')) {
+        // 登录成功，关闭 iframe 并刷新页面
+        closeCasIframe()
+        router.push('/dashboard')
+        ElMessage.success('登录成功')
+      }
+    }
+  } catch (e) {
+    // 跨域无法访问 iframe contentWindow，忽略
+  }
+}
+
+async function checkLoginStatus() {
+  const loggedIn = await CasAuthService.checkLoginStatus()
+  if (loggedIn) {
+    router.push('/dashboard')
+  }
+}
+
 onMounted(() => {
-  // Check if already logged in
   if (authStore.isLoggedIn) {
     router.push('/dashboard')
   }
@@ -183,5 +241,50 @@ onMounted(() => {
 
 .login-footer a:active {
   opacity: 0.7;
+}
+
+/* CAS Iframe Overlay */
+.cas-iframe-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.cas-iframe-container {
+  width: 100%;
+  max-width: 480px;
+  height: 80vh;
+  max-height: 700px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+}
+
+.cas-iframe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e4e7ed;
+  font-weight: 500;
+  color: #303133;
+}
+
+.cas-iframe-container iframe {
+  flex: 1;
+  border: none;
+  width: 100%;
+  min-height: 0;
 }
 </style>

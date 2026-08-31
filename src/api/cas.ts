@@ -4,6 +4,7 @@ import type { CasLoginResult } from '@/types'
 const EDU_SERVICE_URL = 'https://jwgl.whu.edu.cn/sso/jznewsixlogin'
 
 export class CasAuthService {
+  // 通过 Worker 代理获取 CAS 登录 URL
   static async login(): Promise<CasLoginResult> {
     return requestService.casFastLogin(EDU_SERVICE_URL)
   }
@@ -13,7 +14,6 @@ export class CasAuthService {
     if (!cookie) return false
 
     try {
-      // Try to access a protected resource
       await requestService.get('/xtgl/index_cxYhxxIndex.html', {
         xt: 'jw',
         localeKey: 'zh_CN',
@@ -31,13 +31,17 @@ export class CasAuthService {
     localStorage.removeItem('ham_token')
   }
 
+  // 返回代理后的 CAS 登录 URL
   static getLoginUrl(): string {
-    return `${requestService['casClient'].defaults.baseURL}/authserver/login?service=${encodeURIComponent(EDU_SERVICE_URL)}`
+    const service = encodeURIComponent(EDU_SERVICE_URL)
+    return `/api/cas/authserver/login?service=${service}`
   }
 
   static async reAuthenticate(reAuthUrl: string): Promise<CasLoginResult> {
     try {
-      const response = await requestService['casClient'].get(reAuthUrl, { responseType: 'text' })
+      // 通过代理重新认证
+      const proxyUrl = `/api/cas${new URL(reAuthUrl).pathname}${new URL(reAuthUrl).search}`
+      const response = await requestService['casClient'].get(proxyUrl, { responseType: 'text' })
       return {
         url: response.request?.responseURL || reAuthUrl,
         text: response.data,
