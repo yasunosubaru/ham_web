@@ -120,17 +120,6 @@ export default defineConfig({
               },
               networkTimeoutSeconds: 10
             }
-          },
-          {
-            urlPattern: /^https:\/\/cas\.whu\.edu\.cn\/.*/i,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'whu-cas-cache',
-              expiration: {
-                maxEntries: 10,
-                maxAgeSeconds: 60 * 60
-              }
-            }
           }
         ]
       },
