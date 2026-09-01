@@ -1,7 +1,8 @@
 // worker.js - 静态资源托管 + API 代理 + CAS 登录代理
 const ALLOWED_HOSTS = ['jwgl.whu.edu.cn', 'cas.whu.edu.cn'];
-// 允许的前端域名（Vercel/自定义域名）
+// 允许的前端域名
 const ALLOWED_ORIGIN = 'https://ham-web.vercel.app';
+const FRONTEND_URL = 'https://ham-web.vercel.app';
 
 export default {
   async fetch(request, env, ctx) {
@@ -46,6 +47,22 @@ async function handleCasProxy(request, url) {
       body: ['GET', 'HEAD'].includes(request.method) ? null : await request.text(),
       redirect: 'manual',
     });
+    
+    // 检查 CAS 登录成功后的重定向（包含 ticket 参数）
+    const location = resp.headers.get('Location');
+    if (location && location.includes('ticket=')) {
+      // CAS 登录成功，提取 ticket 并重定向回前端
+      const ticketMatch = location.match(/ticket=([^&]+)/);
+      if (ticketMatch) {
+        const ticket = ticketMatch[1];
+        const frontendUrl = `${FRONTEND_URL}?ticket=${ticket}`;
+        const respHeaders = new Headers();
+        respHeaders.set('Location', frontendUrl);
+        respHeaders.set('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
+        respHeaders.set('Access-Control-Allow-Credentials', 'true');
+        return new Response(null, { status: 302, headers: respHeaders });
+      }
+    }
     
     const respHeaders = new Headers(resp.headers);
     // 关键：暴露 Location 头用于重定向

@@ -8,4 +8,4 @@ binding = "ASSETS"
 not_found_handling = "single-page-application"
 
 [vars]
-ALLOWED_ORIGIN = "https://ham-web.1845639127.workers.dev"
+ALLOWED_ORIGIN = "https://ham-web.vercel.app"
