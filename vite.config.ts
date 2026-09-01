@@ -121,7 +121,11 @@ export default defineConfig({
               networkTimeoutSeconds: 10
             }
           }
-        ]
+        ],
+        // 禁止 Service Worker 拦截 CAS 相关的导航请求
+        navigateFallbackDenylist: [/^https:\/\/cas\.whu\.edu\.cn\/.*/i],
+        // 也禁止缓存 CAS 相关的任何请求
+        cleanupOutdatedCaches: true,
       },
       devOptions: {
         enabled: true
