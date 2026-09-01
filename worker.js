@@ -1,5 +1,4 @@
 // worker.js - 静态资源托管 + API 代理 + CAS 登录代理
-const ALLOWED_HOSTS = ['jwgl.whu.edu.cn', 'cas.whu.edu.cn'];
 const ALLOWED_ORIGIN = 'https://ham-web.vercel.app';
 const FRONTEND_URL = 'https://ham-web.vercel.app';
 
