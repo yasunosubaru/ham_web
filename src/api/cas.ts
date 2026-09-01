@@ -49,6 +49,19 @@ export class CasAuthService {
       throw new Error(`重新认证失败: ${error.message}`)
     }
   }
+
+  static async verifyTicket(ticket: string): Promise<boolean> {
+    try {
+      const service = encodeURIComponent(EDU_SERVICE_URL)
+      const response = await requestService.proxyClient.get(
+        `/api/cas/authserver/login?service=${service}&ticket=${ticket}`,
+        { responseType: 'text' }
+      )
+      return response.status === 200
+    } catch {
+      return false
+    }
+  }
 }
 
 export default CasAuthService
