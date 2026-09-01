@@ -2,10 +2,21 @@ import requestService from './request'
 import type { CasLoginResult } from '@/types'
 
 const EDU_SERVICE_URL = 'https://jwgl.whu.edu.cn/sso/jznewsixlogin'
+const CAS_LOGIN_URL = 'https://cas.whu.edu.cn/authserver/login'
 
 export class CasAuthService {
   static async login(): Promise<CasLoginResult> {
-    return requestService.casFastLogin(EDU_SERVICE_URL)
+    // 直接跳转 CAS 官方登录页，登录成功后 CAS 会重定向回前端
+    const service = encodeURIComponent(EDU_SERVICE_URL)
+    const loginUrl = `https://cas.whu.edu.cn/authserver/login?service=${service}`
+    
+    // 返回登录 URL，前端直接跳转
+    return {
+      url: loginUrl,
+      text: '',
+      needsReAuth: false,
+      reAuthUrl: undefined
+    }
   }
 
   static async checkLoginStatus(): Promise<boolean> {
@@ -32,34 +43,16 @@ export class CasAuthService {
 
   static getLoginUrl(): string {
     const service = encodeURIComponent(EDU_SERVICE_URL)
-    return `/api/cas/authserver/login?service=${service}`
+    return `https://cas.whu.edu.cn/authserver/login?service=${service}`
   }
 
   static async reAuthenticate(reAuthUrl: string): Promise<CasLoginResult> {
-    try {
-      const proxyUrl = `/api/cas${new URL(reAuthUrl).pathname}${new URL(reAuthUrl).search}`
-      const response = await requestService['casClient'].get(proxyUrl, { responseType: 'text' })
-      return {
-        url: response.request?.responseURL || reAuthUrl,
-        text: response.data,
-        needsReAuth: response.request?.responseURL?.includes('ReAuth') || false,
-        reAuthUrl: response.request?.responseURL?.includes('ReAuth') ? response.request.responseURL : undefined,
-      }
-    } catch (error: any) {
-      throw new Error(`重新认证失败: ${error.message}`)
-    }
-  }
-
-  static async verifyTicket(ticket: string): Promise<boolean> {
-    try {
-      const service = encodeURIComponent(EDU_SERVICE_URL)
-      const response = await requestService.proxyClient.get(
-        `/api/cas/authserver/login?service=${service}&ticket=${ticket}`,
-        { responseType: 'text' }
-      )
-      return response.status === 200
-    } catch {
-      return false
+    // 直接使用原始 URL，不再走代理
+    return {
+      url: reAuthUrl,
+      text: '',
+      needsReAuth: false,
+      reAuthUrl: undefined
     }
   }
 }

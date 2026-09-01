@@ -59,14 +59,8 @@ async function handleLogin() {
   try {
     const result = await CasAuthService.login()
     
-    if (result.needsReAuth && result.reAuthUrl) {
-      const proxyUrl = `/api/cas${new URL(result.reAuthUrl).pathname}${new URL(result.reAuthUrl).search}`
-      window.location.href = proxyUrl
-      return
-    }
-
-    const casUrl = CasAuthService.getLoginUrl()
-    window.location.href = casUrl
+    // 直接跳转到 CAS 官方登录页面
+    window.location.href = result.url
   } catch (error: any) {
     authStore.setLoginError(error.message || '登录失败，请重试')
   } finally {
@@ -75,30 +69,36 @@ async function handleLogin() {
 }
 
 onMounted(async () => {
+  // 检查是否从 CAS 回调回来（带 ticket 参数）
   const urlParams = new URLSearchParams(window.location.search)
   const ticket = urlParams.get('ticket')
   
   if (ticket) {
+    // 从 CAS 回调回来，清理 URL 并验证登录
     window.history.replaceState({}, document.title, window.location.pathname)
     await verifyTicketAndLogin(ticket)
     return
   }
   
+  // 检查是否已登录
   if (authStore.isLoggedIn) {
     router.push('/dashboard')
     return
   }
   
+  // 尝试恢复登录状态（防止刷新丢失状态）
   await checkLoginStatus()
 })
 
 async function verifyTicketAndLogin(ticket: string) {
   try {
+    // 通过 Worker 验证 ticket 并建立会话
     const response = await fetch(`/api/cas/authserver/login?service=${encodeURIComponent('https://jwgl.whu.edu.cn/sso/jznewsixlogin')}&ticket=${ticket}`, {
       credentials: 'include'
     })
     
     if (response.ok) {
+      // 验证登录状态
       const loggedIn = await CasAuthService.checkLoginStatus()
       if (loggedIn) {
         router.push('/dashboard')
