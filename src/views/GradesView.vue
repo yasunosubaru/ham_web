@@ -6,6 +6,9 @@
         <el-button size="small" @click="showCalcMethodDialog = true">
           <SwitchButton /> 计算方式
         </el-button>
+        <el-button size="small" @click="uploadGrades" :loading="uploading" type="success">
+          <Upload /> 贡献成绩
+        </el-button>
         <el-button size="small" @click="refreshGrades" :loading="gradeStore.loading" type="primary">
           <Refresh /> 刷新
         </el-button>
@@ -204,11 +207,12 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { SwitchButton, Refresh, Plus, Edit, Delete } from '@element-plus/icons-vue'
+import { SwitchButton, Refresh, Plus, Edit, Delete, Upload } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { useGradesStore } from '@/stores/grades'
 import { useAuthStore } from '@/stores/auth'
 import { EducationApiService } from '@/api/education'
+import { GradeDistributionApi } from '@/api/gradeDistribution'
 
 const gradeStore = useGradesStore()
 const authStore = useAuthStore()
@@ -217,6 +221,7 @@ const activeTab = ref<'all' | 'required' | 'elective' | 'general' | 'cross'>('al
 const showCalcMethodDialog = ref(false)
 const showGpaDetail = ref(false)
 const selectedGrades = ref<Set<string>>(new Set())
+const uploading = ref(false)
 
 const filteredGrades = computed(() => {
   if (activeTab.value === 'all') return gradeStore.grades
@@ -299,6 +304,23 @@ async function refreshGrades() {
     ElMessage.success('刷新完成')
   } catch (error) {
     ElMessage.error('刷新失败')
+  }
+}
+
+async function uploadGrades() {
+  if (!gradeStore.grades || gradeStore.grades.length === 0) {
+    ElMessage.warning('暂无成绩数据可上传')
+    return
+  }
+  
+  uploading.value = true
+  try {
+    await GradeDistributionApi.uploadGrades(gradeStore.grades)
+    ElMessage.success('成绩贡献成功！感谢您帮助完善给分查询数据')
+  } catch (error) {
+    ElMessage.error('上传失败，请重试')
+  } finally {
+    uploading.value = false
   }
 }
 

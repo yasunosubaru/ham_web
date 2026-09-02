@@ -14,7 +14,7 @@
 
     <!-- Quick reserve -->
     <div style="padding:0 12px;margin-bottom:12px">
-      <el-button type="primary" class="btn-primary" style="width:100%" @click="quickReserve">
+      <el-button type="primary" class="btn-primary" style="width:100%" @click="quickReserve" :disabled="hasReservation || loading">
         ⚡ 快速预约首选座位
       </el-button>
     </div>
@@ -42,9 +42,9 @@
       <div v-if="selectedLib">
         <div class="section-title">楼层</div>
         <div class="floor-grid">
-          <div v-for="floor in floors" :key="floor.name" class="floor-card">
-            <div class="floor-name">{{ floor.name }}</div>
-            <div class="floor-avail">{{ floor.avail }} 可用</div>
+          <div v-for="floor in selectedLib.floors" :key="floor" class="floor-card" @click="selectFloor(floor)">
+            <div class="floor-name">{{ floor }}</div>
+            <div class="floor-avail">{{ getFloorAvail(floor) }} 可用</div>
           </div>
         </div>
 
@@ -70,59 +70,36 @@
       </div>
       <template #footer>
         <el-button @click="showDetailDialog = false">取消</el-button>
-        <el-button type="primary" @click="confirmReserve">确认预约</el-button>
+        <el-button type="primary" @click="confirmReserve" :disabled="!selectedSeat || loading">确认预约</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { LibraryApi, type LibraryBuilding, type LibraryReservation } from '@/api/library'
 
-interface LibraryBuilding {
-  id: string
-  name: string
-  icon: string
-  avail: number
-}
-
-interface Seat {
-  id: string
-  number: string
-  available: boolean
-}
-
-const libraries: LibraryBuilding[] = [
-  { id: 'lib1', name: '总馆', icon: '🏛️', avail: 120 },
-  { id: 'lib2', name: '工学分馆', icon: '🔧', avail: 85 },
-  { id: 'lib3', name: '理学分馆', icon: '🔬', avail: 63 },
-  { id: 'lib4', name: '信息分馆', icon: '💻', avail: 42 },
-  { id: 'lib5', name: '医学分馆', icon: '🏥', avail: 56 },
-  { id: 'lib6', name: '文科分馆', icon: '📖', avail: 78 },
-]
-
-const floors = [
-  { name: '一楼阅览室', avail: 35 },
-  { name: '二楼自习室', avail: 28 },
-  { name: '三楼研修室', avail: 15 },
-  { name: '四楼多媒体室', avail: 8 },
-]
+const libraries = ref<LibraryBuilding[]>([])
+const loading = ref(false)
 
 const showDetailDialog = ref(false)
 const selectedLib = ref<LibraryBuilding | null>(null)
-const selectedSeat = ref<Seat | null>(null)
+const selectedFloor = ref<string>('')
+const selectedSeat = ref<{ id: string; number: string; available: boolean } | null>(null)
 const selectedTimeSlot = ref('08:00-12:00')
 
-const seats = computed<Seat[]>(() => {
-  if (!selectedLib.value) return []
+const seats = computed(() => {
+  if (!selectedLib.value || !selectedFloor.value) return []
   return Array.from({ length: 20 }, (_, i) => ({
-    id: `${selectedLib.value!.id}-${i + 1}`,
+    id: `${selectedLib.value!.id}-${selectedFloor.value}-${i + 1}`,
     number: `${i + 1}`,
     available: Math.random() > 0.3
   }))
 })
 
-const reservation = reactive({
+const reservation = reactive<LibraryReservation>({
   building: '',
   seat: '',
   timeSlot: '',
@@ -131,38 +108,117 @@ const reservation = reactive({
 
 const hasReservation = computed(() => !!reservation.building)
 
+onMounted(async () => {
+  await loadBuildings()
+  await loadReservation()
+})
+
+async function loadBuildings() {
+  try {
+    const data = await LibraryApi.getBuildings()
+    if (data.length > 0) {
+      libraries.value = data
+    }
+  } catch (error) {
+    console.error('Failed to load buildings:', error)
+  }
+}
+
+async function loadReservation() {
+  try {
+    const data = await LibraryApi.getReservation()
+    if (data) {
+      reservation.building = data.building
+      reservation.seat = data.seat
+      reservation.timeSlot = data.timeSlot
+      reservation.date = data.date
+    }
+  } catch (error) {
+    console.error('Failed to load reservation:', error)
+  }
+}
+
 function selectBuilding(lib: LibraryBuilding) {
   selectedLib.value = lib
+  selectedFloor.value = lib.floors[0] || ''
   selectedSeat.value = null
   showDetailDialog.value = true
 }
 
-function confirmReserve() {
+function selectFloor(floor: string) {
+  selectedFloor.value = floor
+  selectedSeat.value = null
+}
+
+function getFloorAvail(floor: string): number {
+  return Math.floor(Math.random() * 30) + 10
+}
+
+async function confirmReserve() {
   if (!selectedLib.value || !selectedSeat.value) {
+    ElMessage.warning('请选择座位')
     return
   }
-  reservation.building = selectedLib.value.name
-  reservation.seat = `${selectedSeat.value.number}号座位`
-  reservation.timeSlot = selectedTimeSlot.value
-  reservation.date = new Date().toLocaleDateString()
-  showDetailDialog.value = false
+  
+  loading.value = true
+  try {
+    await LibraryApi.reserve({
+      buildingId: selectedLib.value.id,
+      buildingName: selectedLib.value.name,
+      floor: selectedFloor.value,
+      seatNumber: selectedSeat.value.number,
+      timeSlot: selectedTimeSlot.value,
+      date: new Date().toLocaleDateString()
+    })
+    ElMessage.success('预约成功！')
+    showDetailDialog.value = false
+    await loadReservation()
+  } catch (error) {
+    ElMessage.error('预约失败，请重试')
+  } finally {
+    loading.value = false
+  }
 }
 
 function quickReserve() {
   if (hasReservation.value) {
+    ElMessage.warning('已有预约，请先取消')
     return
   }
-  reservation.building = libraries[0].name
-  reservation.seat = `${Math.floor(Math.random() * 30 + 1)}号座位`
-  reservation.timeSlot = '08:00-12:00'
-  reservation.date = new Date().toLocaleDateString()
+  if (libraries.value.length === 0) return
+  
+  const lib = libraries.value[0]
+  const seatNum = Math.floor(Math.random() * 30 + 1)
+  
+  loading.value = true
+  LibraryApi.reserve({
+    buildingId: lib.id,
+    buildingName: lib.name,
+    floor: lib.floors[0],
+    seatNumber: seatNum.toString(),
+    timeSlot: '08:00-12:00',
+    date: new Date().toLocaleDateString()
+  }).then(() => {
+    ElMessage.success('快速预约成功！')
+    loadReservation()
+  }).catch(() => {
+    ElMessage.error('预约失败')
+  }).finally(() => {
+    loading.value = false
+  })
 }
 
-function cancelReservation() {
-  reservation.building = ''
-  reservation.seat = ''
-  reservation.timeSlot = ''
-  reservation.date = ''
+async function cancelReservation() {
+  try {
+    await LibraryApi.cancelReservation()
+    ElMessage.success('已取消预约')
+    reservation.building = ''
+    reservation.seat = ''
+    reservation.timeSlot = ''
+    reservation.date = ''
+  } catch (error) {
+    ElMessage.error('取消失败')
+  }
 }
 </script>
 
@@ -265,6 +321,7 @@ function cancelReservation() {
   border-radius: 10px;
   padding: 12px;
   text-align: center;
+  cursor: pointer;
 }
 
 .floor-name {

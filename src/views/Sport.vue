@@ -14,7 +14,12 @@
     </div>
 
     <!-- Venue list -->
-    <div v-for="venue in filteredVenues" :key="venue.id" class="sport-card">
+    <div v-if="loading" class="loading-state" style="padding: 20px; text-align: center;">
+      <el-icon><Loading class="is-rotating" /></el-icon>
+      <span>正在加载场馆...</span>
+    </div>
+    
+    <div v-else v-for="venue in filteredVenues" :key="venue.id" class="sport-card">
       <div class="sport-header">
         <div class="sport-name">{{ venue.icon }} {{ venue.name }}</div>
         <span class="sport-badge" :class="venue.available ? 'available' : 'full'">
@@ -26,7 +31,7 @@
           v-for="(slot, idx) in venue.slots"
           :key="idx"
           class="time-chip"
-          :class="{ disabled: !venue.available && idx > 1 }"
+          :class="{ disabled: !venue.available || bookingLoading === venue.id + '-' + idx }"
           @click="venue.available && bookVenue(venue, slot)"
         >
           {{ slot }}
@@ -44,32 +49,16 @@
       </div>
       <template #footer>
         <el-button @click="showBookDialog = false">取消</el-button>
-        <el-button type="primary" @click="confirmBooking">确认预定</el-button>
+        <el-button type="primary" @click="confirmBooking" :loading="bookingLoading">确认预定</el-button>
       </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-
-interface Venue {
-  id: number
-  name: string
-  type: string
-  icon: string
-  slots: string[]
-  available: boolean
-}
-
-const venues: Venue[] = [
-  { id: 1, name: '奥场篮球场', type: 'basketball', icon: '🏀', slots: ['08:00-10:00', '10:00-12:00', '14:00-16:00', '16:00-18:00', '19:00-21:00'], available: true },
-  { id: 2, name: '桂园羽毛球馆', type: 'badminton', icon: '🏸', slots: ['09:00-11:00', '11:00-13:00', '14:00-16:00', '16:00-18:00'], available: true },
-  { id: 3, name: '游泳馆', type: 'swimming', icon: '🏊', slots: ['06:30-08:30', '12:00-14:00', '17:00-19:00', '19:00-21:00'], available: false },
-  { id: 4, name: '网球场A', type: 'tennis', icon: '🎾', slots: ['08:00-10:00', '10:00-12:00', '14:00-16:00'], available: true },
-  { id: 5, name: '网球场B', type: 'tennis', icon: '🎾', slots: ['08:00-10:00', '16:00-18:00', '18:00-20:00'], available: true },
-  { id: 6, name: '梅操篮球场', type: 'basketball', icon: '🏀', slots: ['09:00-11:00', '15:00-17:00', '19:00-21:00'], available: true },
-]
+import { ref, computed, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
+import { SportsApi, type SportsVenue } from '@/api/sports'
 
 const filters = [
   { value: 'all', label: '全部', icon: '' },
@@ -80,13 +69,16 @@ const filters = [
 ]
 
 const currentFilter = ref('all')
+const loading = ref(false)
 const showBookDialog = ref(false)
-const bookingVenue = ref<Venue | null>(null)
+const bookingVenue = ref<SportsVenue | null>(null)
 const bookingSlot = ref('')
+const bookingLoading = ref<string>('')
+const venues = ref<SportsVenue[]>([])
 
 const filteredVenues = computed(() => {
-  if (currentFilter.value === 'all') return venues
-  return venues.filter(v => v.type === currentFilter.value)
+  if (currentFilter.value === 'all') return venues.value
+  return venues.value.filter(v => v.type === currentFilter.value)
 })
 
 const todayStr = computed(() => {
@@ -94,16 +86,53 @@ const todayStr = computed(() => {
   return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`
 })
 
-function bookVenue(venue: Venue, slot: string) {
+onMounted(async () => {
+  await loadVenues()
+})
+
+async function loadVenues() {
+  loading.value = true
+  try {
+    const data = await SportsApi.getVenues()
+    if (data.length > 0) {
+      venues.value = data
+    }
+  } catch (error) {
+    console.error('Failed to load venues:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+function bookVenue(venue: SportsVenue, slot: string) {
   bookingVenue.value = venue
   bookingSlot.value = slot
   showBookDialog.value = true
 }
 
-function confirmBooking() {
-  showBookDialog.value = false
-  bookingVenue.value = null
-  bookingSlot.value = ''
+async function confirmBooking() {
+  if (!bookingVenue.value || !bookingSlot.value) return
+  
+  const key = `${bookingVenue.value.id}-${bookingSlot.value}`
+  bookingLoading.value = key
+  
+  try {
+    await SportsApi.book({
+      venueId: bookingVenue.value.id,
+      venueName: bookingVenue.value.name,
+      venueType: bookingVenue.value.type,
+      timeSlot: bookingSlot.value,
+      date: new Date().toLocaleDateString()
+    })
+    ElMessage.success('预定成功！')
+    showBookDialog.value = false
+    bookingVenue.value = null
+    bookingSlot.value = ''
+  } catch (error) {
+    ElMessage.error('预定失败，请重试')
+  } finally {
+    bookingLoading.value = ''
+  }
 }
 </script>
 
@@ -201,5 +230,13 @@ function confirmBooking() {
     opacity: 0.4;
     pointer-events: none;
   }
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-tertiary);
 }
 </style>

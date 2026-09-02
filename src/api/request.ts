@@ -376,6 +376,14 @@ class RequestService {
   async proxyPost<T>(endpoint: string, data?: any): Promise<T> {
     return this.proxyClient.post(endpoint, data)
   }
+
+  async proxyPut<T>(endpoint: string, data?: any): Promise<T> {
+    return this.proxyClient.put(endpoint, data)
+  }
+
+  async proxyDelete<T>(endpoint: string): Promise<T> {
+    return this.proxyClient.delete(endpoint)
+  }
 }
 
 export const requestService = new RequestService()

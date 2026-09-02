@@ -166,43 +166,18 @@ async function handleSearch() {
   
   loading.value = true
   try {
-    // Search by teacher name
-    const teacherInfo = await GradeDistributionApi.getTeacherInfo(searchKeyword.value)
-    if (teacherInfo) {
-      const ratings = await GradeDistributionApi.getTeacherRatings(teacherInfo.name)
-      const avgRating = ratings.length > 0 
-        ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length 
-        : 0
-      
-      searchResults.value = [{
-        name: teacherInfo.name,
-        department: teacherInfo.department,
-        college: teacherInfo.college,
-        rating: avgRating,
-        totalRatings: ratings.length,
-        courses: teacherInfo.courses,
-      }]
+    const results = await GradeDistributionApi.searchTeachers(searchKeyword.value)
+    if (results && results.length > 0) {
+      searchResults.value = results.map(t => ({
+        name: t.name,
+        department: t.department,
+        college: t.college,
+        courses: t.courses,
+        rating: t.rating,
+        totalRatings: t.totalRatings,
+      }))
     } else {
-      // Try searching by course name
-      const result = await GradeDistributionApi.search({ courseName: searchKeyword.value })
-      if (result) {
-        const teacherInfo2 = await GradeDistributionApi.getTeacherInfo(result.teacherName)
-        if (teacherInfo2) {
-          const ratings = await GradeDistributionApi.getTeacherRatings(teacherInfo2.name)
-          const avgRating = ratings.length > 0 
-            ? ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length 
-            : 0
-          
-          searchResults.value = [{
-            name: teacherInfo2.name,
-            department: teacherInfo2.department,
-            college: teacherInfo2.college,
-            rating: avgRating,
-            totalRatings: ratings.length,
-            courses: teacherInfo2.courses,
-          }]
-        }
-      }
+      searchResults.value = []
     }
   } catch (error) {
     console.error('Search error:', error)
